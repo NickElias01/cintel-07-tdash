@@ -59,7 +59,7 @@ with ui.sidebar(title="Filter controls"):
 # Main layout: Wrapping the value boxes in a flexible layout container
 with ui.layout_column_wrap(fill=False):
     # First value box: Displays the number of filtered penguins
-    with ui.value_box(showcase=icon_svg("earlybirds")):
+    with ui.value_box(showcase=icon_svg("earlybirds"),style="background-color: lightblue; color: darkblue;"):
         "Number of penguins"
 
         @render.text
@@ -68,7 +68,7 @@ with ui.layout_column_wrap(fill=False):
             return filtered_df().shape[0]
 
     # Second value box: Displays the average bill length
-    with ui.value_box(showcase=icon_svg("ruler-horizontal")):
+    with ui.value_box(showcase=icon_svg("ruler-horizontal"),style="background-color: lightblue; color: darkblue;"):
         "Average bill length"
 
         @render.text
@@ -77,18 +77,20 @@ with ui.layout_column_wrap(fill=False):
             return f"{filtered_df()['bill_length_mm'].mean():.1f} mm"
 
     # Third value box: Displays the average bill depth
-    with ui.value_box(showcase=icon_svg("ruler-vertical")):
+    with ui.value_box(showcase=icon_svg("ruler-vertical"),style="background-color: lightblue; color: darkblue;"):
         "Average bill depth"
 
         @render.text
         def bill_depth():
             # Calculate and return the mean bill depth, rounded to 1 decimal place
             return f"{filtered_df()['bill_depth_mm'].mean():.1f} mm"
+        
+
 
 # Layout for the main content, including plots and data tables
 with ui.layout_columns():
     # First card: Scatterplot of bill length vs. bill depth
-    with ui.card(full_screen=True):
+    with ui.card(full_screen=True,):
         ui.card_header("Bill length and depth")  # Header for the card
 
         @render.plot
@@ -98,7 +100,9 @@ with ui.layout_columns():
                 data=filtered_df(),
                 x="bill_length_mm",
                 y="bill_depth_mm",
-                hue="species",  # Color points by species
+                hue="species",  # Color points by species,
+                palette="pastel"
+                
             )
 
     # Second card: Data table with penguin information
@@ -119,7 +123,7 @@ with ui.layout_columns():
             return render.DataGrid(filtered_df()[cols], filters=True)
 
 # CSS can be included for additional styling, if needed (uncomment the next line to use custom styles)
-# ui.include_css(app_dir / "styles.css")
+# ui.include_css("styles.css")
 
 # Reactive function to filter the dataset based on user inputs
 @reactive.calc
