@@ -4,6 +4,8 @@ from faicons import icon_svg  # For using Font Awesome icons
 from shiny import reactive  # For reactivity (dynamic updates) in PyShiny
 from shiny.express import input, render, ui  # For UI elements and rendering outputs
 import palmerpenguins  # Dataset for example purposes
+import plotly.express as px  # Import Plotly Express
+from shinywidgets import render_plotly  # Import render_plotly for Plotly integration
 
 # Load the dataset: This is a dataset of penguin measurements
 df = palmerpenguins.load_penguins()
@@ -93,17 +95,27 @@ with ui.layout_columns():
     with ui.card(full_screen=True,):
         ui.card_header("Bill length and depth")  # Header for the card
 
-        @render.plot
+        @render_plotly
         def length_depth():
-            # Create a scatterplot showing the relationship between bill length and depth
-            return sns.scatterplot(
-                data=filtered_df(),
-                x="bill_length_mm",
-                y="bill_depth_mm",
-                hue="species",  # Color points by species,
-                palette="pastel"
-                
+            fig = px.scatter(
+                filtered_df(),  # Data to be plotted
+                x="bill_length_mm",  # X-axis: Bill Length
+                y="bill_depth_mm",  # Y-axis: Bill Depth
+                color="species",  # Color points by species
+                title="Bill Length vs. Depth",  # Title of the plot
+                color_discrete_sequence=px.colors.qualitative.Dark24,  # Set color palette
+                labels={"bill_length_mm": "Bill Length (mm)", "bill_depth_mm": "Bill Depth (mm)"}  # Axis labels
             )
+            
+            # Customize the layout (optional)
+            fig.update_layout(
+                plot_bgcolor="lightblue",  # Background color for the plot area
+                paper_bgcolor="white",  # Background color for the entire figure
+                title_x=0.5,  # Center the title
+                title_font=dict(size=16, color="darkblue")  # Customize title font
+            )
+            
+            return fig
 
     # Second card: Data table with penguin information
     with ui.card(full_screen=True):
